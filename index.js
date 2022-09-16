@@ -44,6 +44,13 @@ const rest = new REST({ version: "10" }).setToken(token);
 client.on("interactionCreate", async (interaction) => {
   if (!interaction.isChatInputCommand()) return;
 
+  if (!interaction.guild.members.me.permissions.has("Administrator")) {
+    return interaction.reply({
+      content:
+        "Please provide me with admin perms to ensure that all commands work as expected.",
+    });
+  }
+
   const { commandName } = interaction;
 
   if (commandName) {
