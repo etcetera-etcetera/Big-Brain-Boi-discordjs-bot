@@ -1,18 +1,18 @@
 module.exports = {
   data: {
-    name: "kick",
-    description: "Kicks a user from the server.",
-    help: "/kick <user> [reason]",
+    name: "ban",
+    description: "Bans a user from the server.",
+    help: "/ban <user> [reason]",
     options: [
       {
         name: "user",
-        description: "The user to kick.",
+        description: "The user to ban.",
         type: 6,
         required: true,
       },
       {
         name: "reason",
-        description: "The reason for kicking the user.",
+        description: "The reason for banning the user.",
         type: 3,
         required: true,
       },
@@ -22,21 +22,21 @@ module.exports = {
     const member = interaction.options.getMember("user");
     const reason = interaction.options.getString("reason");
 
-    if (!interaction.member.permissions.has("KICK_MEMBERS")) {
+    if (!interaction.member.permissions.has("BAN_MEMBERS")) {
       return interaction.reply({
-        content: "You don't have permission to kick members.",
+        content: "You don't have permission to ban members.",
       });
     }
 
-    if (!member.kickable) {
+    if (!member.bannable) {
       return interaction.reply({
-        content: "I can't kick this user.",
+        content: "I can't ban this user.",
       });
     }
 
-    await member.kick(reason);
+    await member.ban({ reason });
     await interaction.reply({
-      content: `Kicked ${member.user.tag} from the server.`,
+      content: `Banned ${member.user.tag} from the server.`,
     });
   },
 };
