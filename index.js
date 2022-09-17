@@ -1,3 +1,8 @@
+console.clear();
+console.log(
+  "------------------------------------------------------------------------------------------------------"
+);
+
 const { REST } = require("@discordjs/rest");
 const Discord = require("discord.js");
 const dotenv = require("dotenv");
