@@ -23,7 +23,11 @@ module.exports = {
 
       for (let i = 0; i < 3; i++) {
         const result = data.query.search[i];
-        returnStr += `${result.title} - <https://en.wikipedia.org/wiki/${result.title}>\n`;
+        returnStr += `${
+          result.title
+        } - <https://en.wikipedia.org/wiki/${result.title
+          .split(" ")
+          .join("_")}>\n`;
       }
 
       await interaction.reply({
