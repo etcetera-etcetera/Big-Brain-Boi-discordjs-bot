@@ -1,7 +1,9 @@
+// FOR DEVELOPMENT PURPOSES ONLY
 console.clear();
 console.log(
   "------------------------------------------------------------------------------------------------------"
 );
+// FOR DEVELOPMENT PURPOSES ONLY
 
 const { REST } = require("@discordjs/rest");
 const Discord = require("discord.js");
