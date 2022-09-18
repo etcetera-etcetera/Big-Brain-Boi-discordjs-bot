@@ -34,8 +34,6 @@ module.exports = {
     await interaction.deferReply();
     const location = interaction.options.getString("location");
     const weather = await getWeather(location, interaction);
-    console.log(weather);
-
     if (weather === false) return;
     const embed = new Discord.EmbedBuilder()
       .setTitle(
