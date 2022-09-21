@@ -12,6 +12,7 @@
     "@discordjs/rest": "^1.1.0",
     "@iamtraction/google-translate": "^1.1.2",
     "discord.js": "^14.3.0",
+    "embed-table": "^3.0.0",
     "google-it": "^1.6.3",
     "request": "^2.88.2"
   },

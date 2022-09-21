@@ -15,7 +15,7 @@ const client = new Discord.Client({
   intents: [Discord.GatewayIntentBits.Guilds],
 });
 
-const { token, prefix, clientId, guildId } = process.env;
+const { token, clientId, guildId } = process.env;
 
 const commands = [];
 const commandFiles = fs
