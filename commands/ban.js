@@ -1,22 +1,22 @@
+const { SlashCommandBuilder } = require("discord.js");
+
+var commandData = new SlashCommandBuilder()
+  .setName("ban")
+  .setDescription("Bans a user from the server.")
+  .addUserOption((option) =>
+    option.setName("user").setDescription("The user to ban").setRequired(true)
+  )
+  .addStringOption((option) =>
+    option
+      .setName("reason")
+      .setDescription("The reason for the ban")
+      .setRequired(true)
+  );
+
 module.exports = {
   data: {
-    name: "ban",
-    description: "Bans a user from the server.",
     help: "/ban <user> [reason]",
-    options: [
-      {
-        name: "user",
-        description: "The user to ban.",
-        type: 6,
-        required: true,
-      },
-      {
-        name: "reason",
-        description: "The reason for banning the user.",
-        type: 3,
-        required: true,
-      },
-    ],
+    ...commandData.toJSON(),
   },
   async execute(interaction) {
     const member = interaction.options.getMember("user");

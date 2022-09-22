@@ -1,8 +1,13 @@
+const { SlashCommandBuilder } = require("discord.js");
+
+const commandData = new SlashCommandBuilder()
+  .setName("invite")
+  .setDescription("Generates an invite link of the server");
+
 module.exports = {
   data: {
-    name: "invite",
-    description: "Generates an invite link.",
     help: "/invite",
+    ...commandData.toJSON(),
   },
   async execute(interaction) {
     const invite = await interaction.channel.createInvite({

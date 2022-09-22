@@ -1,18 +1,20 @@
 const request = require("request");
+const { SlashCommandBuilder } = require("discord.js");
+
+const commandData = new SlashCommandBuilder()
+  .setName("gif")
+  .setDescription("Searches Tenor for a GIF.")
+  .addStringOption((option) =>
+    option
+      .setName("query")
+      .setDescription("The query to search for")
+      .setRequired(true)
+  );
 
 module.exports = {
   data: {
-    name: "gif",
-    description: "Searches Tenor for a GIF.",
     help: "/gif <query>",
-    options: [
-      {
-        name: "query",
-        description: "The query to search for.",
-        type: 3,
-        required: true,
-      },
-    ],
+    ...commandData.toJSON(),
   },
   async execute(interaction) {
     const query = interaction.options.getString("query");

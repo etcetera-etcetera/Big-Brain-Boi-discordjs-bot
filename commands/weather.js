@@ -1,4 +1,15 @@
 const Discord = require("discord.js");
+const { SlashCommandBuilder } = Discord;
+
+const commandData = new SlashCommandBuilder()
+  .setName("weather")
+  .setDescription("Get the weather of a location.")
+  .addStringOption((option) =>
+    option
+      .setName("location")
+      .setDescription("The location to get the weather of.")
+      .setRequired(true)
+  );
 
 async function getWeather(location, interaction) {
   const response = await fetch(`https://wttr.in/${location}?format=j1`).catch(
@@ -18,17 +29,8 @@ async function getWeather(location, interaction) {
 
 module.exports = {
   data: {
-    name: "weather",
-    description: "Get the weather for a location",
     help: "/weather <location>",
-    options: [
-      {
-        name: "location",
-        description: "The location to get weather for",
-        type: 3,
-        required: true,
-      },
-    ],
+    ...commandData.toJSON(),
   },
   async execute(interaction) {
     await interaction.deferReply();

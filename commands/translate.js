@@ -1,31 +1,33 @@
+const { SlashCommandBuilder } = require("discord.js");
+
+const commandData = new SlashCommandBuilder()
+  .setName("translate")
+  .setDescription("Translate a word or phrase to another language.")
+  .addStringOption((option) =>
+    option
+      .setName("language_from")
+      .setDescription("The language to translate from.")
+      .setRequired(true)
+  )
+  .addStringOption((option) =>
+    option
+      .setName("language_to")
+      .setDescription("The language to translate to")
+      .setRequired(true)
+  )
+  .addStringOption((option) =>
+    option
+      .setName("text")
+      .setDescription("The text to translate")
+      .setRequired(true)
+  );
+
 module.exports = {
   data: {
-    name: "translate",
-    description: "Translate a word or phrase to another language",
     help: "translate <language_from> <language_to> <text>",
-    options: [
-      {
-        name: "language_from",
-        description: "The language to translate from",
-        type: 3,
-        required: true,
-      },
-      {
-        name: "language_to",
-        description: "The language to translate to",
-        type: 3,
-        required: true,
-      },
-      {
-        name: "text",
-        description: "The text to translate",
-        type: 3,
-        required: true,
-      },
-    ],
+    ...commandData.toJSON(),
   },
   async execute(interaction) {
-    // const { language_from, language_to, text } = interaction.options;
     const language_from = interaction.options.getString("language_from");
     const language_to = interaction.options.getString("language_to");
     const text = interaction.options.getString("text");

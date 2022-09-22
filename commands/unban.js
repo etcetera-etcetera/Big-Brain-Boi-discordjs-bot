@@ -1,22 +1,25 @@
+const { SlashCommandBuilder } = require("discord.js");
+
+const commandData = new SlashCommandBuilder()
+  .setName("unban")
+  .setDescription("Unban a user from the server.")
+  .addUserOption((option) =>
+    option
+      .setName("user")
+      .setDescription("The user to unban.")
+      .setRequired(true)
+  )
+  .addStringOption((option) =>
+    option
+      .setName("reason")
+      .setDescription("The reason for unbanning the user.")
+      .setRequired(true)
+  );
+
 module.exports = {
   data: {
-    name: "unban",
-    description: "Unbans a user from the server.",
     help: "/unban <user> [reason]",
-    options: [
-      {
-        name: "user_id",
-        description: "The ID of the user to unban.",
-        type: 3,
-        required: true,
-      },
-      {
-        name: "reason",
-        description: "The reason for unbanning the user.",
-        type: 3,
-        required: true,
-      },
-    ],
+    ...commandData.toJSON(),
   },
   async execute(interaction) {
     const member = interaction.options.getString("user_id");

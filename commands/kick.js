@@ -1,22 +1,22 @@
+const { SlashCommandBuilder } = require("discord.js");
+
+const commandData = new SlashCommandBuilder()
+  .setName("kick")
+  .setDescription("Kicks a user from the server.")
+  .addUserOption((option) =>
+    option.setName("user").setDescription("The user to kick").setRequired(true)
+  )
+  .addStringOption((option) =>
+    option
+      .setName("reason")
+      .setDescription("The reason for the kick")
+      .setRequired(true)
+  );
+
 module.exports = {
   data: {
-    name: "kick",
-    description: "Kicks a user from the server.",
     help: "/kick <user> [reason]",
-    options: [
-      {
-        name: "user",
-        description: "The user to kick.",
-        type: 6,
-        required: true,
-      },
-      {
-        name: "reason",
-        description: "The reason for kicking the user.",
-        type: 3,
-        required: true,
-      },
-    ],
+    ...commandData.toJSON(),
   },
   async execute(interaction) {
     const member = interaction.options.getMember("user");

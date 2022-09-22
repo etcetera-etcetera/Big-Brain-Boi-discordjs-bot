@@ -1,16 +1,19 @@
+const { SlashCommandBuilder } = require("discord.js");
+
+const commandData = new SlashCommandBuilder()
+  .setName("clear")
+  .setDescription("Clears messages from a channel.")
+  .addIntegerOption((option) =>
+    option
+      .setName("amount")
+      .setDescription("The amount of messages to clear")
+      .setRequired(true)
+  );
+
 module.exports = {
   data: {
-    name: "clear",
-    description: "Clears messages",
     help: "/clear <number of messages to clear>",
-    options: [
-      {
-        name: "messages",
-        description: "Number of messages to clear",
-        type: 4,
-        required: true,
-      },
-    ],
+    ...commandData.toJSON(),
   },
   async execute(interaction) {
     if (!interaction.member.permissions.has("MANAGE_MESSAGES")) {

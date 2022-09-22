@@ -1,24 +1,23 @@
 const Discord = require("discord.js");
+const { SlashCommandBuilder } = Discord;
+
+const commandData = new SlashCommandBuilder()
+  .setName("warn")
+  .setDescription("Warn a user.")
+  .addUserOption((option) =>
+    option.setName("user").setDescription("The user to warn.").setRequired(true)
+  )
+  .addStringOption((option) =>
+    option
+      .setName("reason")
+      .setDescription("The reason for warning the user.")
+      .setRequired(true)
+  );
 
 module.exports = {
   data: {
-    name: "warn",
-    description: "Warn a user",
     help: "warn <user> <reason>",
-    options: [
-      {
-        name: "user",
-        description: "The user to warn",
-        type: 6,
-        required: true,
-      },
-      {
-        name: "reason",
-        description: "The reason for the warning",
-        type: 3,
-        required: true,
-      },
-    ],
+    ...commandData.toJSON(),
   },
   async execute(interaction) {
     if (!interaction.member.permissions.has("ADMINISTRATOR")) {

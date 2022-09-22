@@ -1,8 +1,13 @@
+const { SlashCommandBuilder } = require("discord.js");
+
+const commandData = new SlashCommandBuilder()
+  .setName("help")
+  .setDescription("Shows a list of commands.");
+
 module.exports = {
   data: {
-    name: "help",
-    description: "Shows a list of commands.",
     help: "/help",
+    ...commandData.toJSON(),
   },
   async execute(interaction) {
     await interaction.reply(
