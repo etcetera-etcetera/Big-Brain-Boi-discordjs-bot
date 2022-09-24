@@ -42,9 +42,13 @@ var afkUsers = [];
 
 const query = db.collection("afk").where("afk", "==", true);
 const observer = query.onSnapshot((querySnapshot) => {
+  while (afkUsers.length > 0) {
+    afkUsers.pop();
+  }
   querySnapshot.forEach((doc) => {
     afkUsers.push({ id: doc.id, ...doc.data() });
   });
+  console.log(afkUsers);
 });
 
 // Initialising the Discord client
@@ -104,11 +108,28 @@ client.on("messageCreate", async (message) => {
         .setDescription(
           "Your AFK status has been removed. You are no longer AFK."
         );
-      await message.channel.send({ embeds: [embed] });
       await db
         .collection("afk")
         .doc(message.author.id)
         .set({ afk: false, message: "" });
+      await message.channel.send({ embeds: [embed] });
+    }
+  }
+
+  var { users } = message.mentions;
+  for (const user of users) {
+    var afkUser = await afkUsers.find((afkuser) => afkuser.id === user[0]);
+    if (afkUser) {
+      if (afkUser.afk) {
+        const embed = new Discord.EmbedBuilder()
+          .setColor("#0099ff")
+          .setTitle("AFK")
+          .setDescription(
+            `${user[1].tag} is AFK. Their AFK message is: "${afkUser.message}".`
+          );
+        await message.channel.send({ embeds: [embed] });
+        return;
+      }
     }
   }
 });
