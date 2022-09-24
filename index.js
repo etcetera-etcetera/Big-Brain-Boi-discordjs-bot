@@ -48,7 +48,6 @@ const observer = query.onSnapshot((querySnapshot) => {
   querySnapshot.forEach((doc) => {
     afkUsers.push({ id: doc.id, ...doc.data() });
   });
-  console.log(afkUsers);
 });
 
 // Initialising the Discord client
@@ -121,6 +120,7 @@ client.on("messageCreate", async (message) => {
     var afkUser = await afkUsers.find((afkuser) => afkuser.id === user[0]);
     if (afkUser) {
       if (afkUser.afk) {
+        message.delete();
         const embed = new Discord.EmbedBuilder()
           .setColor("#0099ff")
           .setTitle("AFK")
