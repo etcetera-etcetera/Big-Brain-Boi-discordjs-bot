@@ -33,8 +33,20 @@ initializeApp({
 });
 const db = getFirestore();
 
+var afkUsers = [];
+
+const query = db.collection("afk").where("afk", "==", true);
+const observer = query.onSnapshot((querySnapshot) => {
+  querySnapshot.forEach((doc) => {
+    afkUsers.push({ id: doc.id, ...doc.data() });
+  });
+});
+
 const client = new Discord.Client({
-  intents: [Discord.GatewayIntentBits.Guilds],
+  intents: [
+    Discord.GatewayIntentBits.Guilds,
+    Discord.GatewayIntentBits.GuildMessages,
+  ],
 });
 
 const { token, clientId, guildId } = process.env;
@@ -70,7 +82,28 @@ const rest = new REST({ version: "10" }).setToken(token);
   }
 })();
 
+client.on("messageCreate", async (message) => {
+  var user = afkUsers.find((user) => user.id === message.author.id);
+  if (user) {
+    if (user.afk) {
+      const embed = new Discord.EmbedBuilder()
+        .setColor("#0099ff")
+        .setTitle("AFK")
+        .setDescription(
+          "Your AFK status has been removed. You are no longer AFK."
+        );
+      await message.channel.send({ embeds: [embed] });
+      await db
+        .collection("afk")
+        .doc(message.author.id)
+        .set({ afk: false, message: "" });
+    }
+  }
+});
+
 client.on("interactionCreate", async (interaction) => {
+  console.log(interaction.is);
+
   if (!interaction.isChatInputCommand()) return;
 
   if (!interaction.guild.members.me.permissions.has("Administrator")) {
@@ -82,7 +115,9 @@ client.on("interactionCreate", async (interaction) => {
 
   const { commandName } = interaction;
 
-  if (commandName) {
+  if (commandName == "afk") {
+    require("./commands/afk.js").execute(interaction, db);
+  } else {
     require(`./commands/${commandName}`).execute(interaction);
   }
 });
