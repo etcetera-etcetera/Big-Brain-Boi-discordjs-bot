@@ -5,6 +5,7 @@ console.log(
 );
 // FOR DEVELOPMENT PURPOSES ONLY
 
+// Importing the required modules
 const { REST } = require("@discordjs/rest");
 const Discord = require("discord.js");
 const dotenv = require("dotenv");
@@ -13,8 +14,10 @@ const admin = require("firebase-admin");
 const { initializeApp } = require("firebase-admin/app");
 const { getFirestore } = require("firebase-admin/firestore");
 
+// Loading the environment variables
 dotenv.config();
 
+// Initialising the Discord client
 const serviceAccount = {
   type: process.env.FIREBASE_TYPE,
   project_id: process.env.FIREBASE_PROJECT_ID,
@@ -28,11 +31,13 @@ const serviceAccount = {
   client_x509_cert_url: process.env.FIREBASE_CLIENT_X509_CERT_URL,
 };
 
+// Initialising the Firebase app
 initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 const db = getFirestore();
 
+// Initialising the afkUsers array and listener for faster access and realtime updates
 var afkUsers = [];
 
 const query = db.collection("afk").where("afk", "==", true);
@@ -42,6 +47,7 @@ const observer = query.onSnapshot((querySnapshot) => {
   });
 });
 
+// Initialising the Discord client
 const client = new Discord.Client({
   intents: [
     Discord.GatewayIntentBits.Guilds,
@@ -49,20 +55,25 @@ const client = new Discord.Client({
   ],
 });
 
+// Retrieving required variables from the environment variables
 const { token, clientId, guildId } = process.env;
 
+// Retrieving the commands from the commands folder
 const commands = [];
 const commandFiles = fs
   .readdirSync("./commands")
   .filter((file) => file.endsWith(".js"));
 
+// Adding the commands to the commands array
 for (const file of commandFiles) {
   const command = require(`./commands/${file}`);
   commands.push(command.data);
 }
 
+// Initialising the REST client
 const rest = new REST({ version: "10" }).setToken(token);
 
+// Registering the application (/) commands
 (async () => {
   try {
     console.log(
@@ -82,6 +93,7 @@ const rest = new REST({ version: "10" }).setToken(token);
   }
 })();
 
+// Listening for the messages to detect if an AFK user is back online
 client.on("messageCreate", async (message) => {
   var user = afkUsers.find((user) => user.id === message.author.id);
   if (user) {
@@ -101,11 +113,11 @@ client.on("messageCreate", async (message) => {
   }
 });
 
+// Listening for the interactions to execute the commands
 client.on("interactionCreate", async (interaction) => {
-  console.log(interaction.is);
-
   if (!interaction.isChatInputCommand()) return;
 
+  // Checking if the bot has required permissions for all commands
   if (!interaction.guild.members.me.permissions.has("Administrator")) {
     return interaction.reply({
       content:
@@ -115,11 +127,14 @@ client.on("interactionCreate", async (interaction) => {
 
   const { commandName } = interaction;
 
+  // Checking if command is /afk for the extra parameter
   if (commandName == "afk") {
     require("./commands/afk.js").execute(interaction, db);
   } else {
+    // Running the command
     require(`./commands/${commandName}`).execute(interaction);
   }
 });
 
+// Logging in the bot
 client.login(token);
