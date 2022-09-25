@@ -16,6 +16,23 @@ const commandData = new SlashCommandBuilder()
           .setName("league_id")
           .setDescription("The ID of the league to get standings for")
           .setRequired(true)
+      ) 
+  )
+  .addSubcommand((subcommand) =>
+    subcommand
+      .setName("fixtures")
+      .setDescription("Get the fixtures of a team in a league")
+      .addStringOption((option) =>
+        option
+          .setName("league_id")
+          .setDescription("The ID of the league to get fixtures for")
+          .setRequired(true)
+      )
+      .addStringOption((option) =>
+        option
+          .setName("team_id")
+          .setDescription("The ID of the team to get fixtures for")
+          .setRequired(true)
       )
   );
 
@@ -71,6 +88,55 @@ function standings(interaction) {
   });
 }
 
+function fixtures(interaction) {
+  const league_id = interaction.options.getString("league_id");
+  const team_id = interaction.options.getString("team_id");
+  var url = `https://api-football-standings.azharimm.dev/leagues/${league_id}/teams/${team_id}/fixtures?sort=asc`;
+  request(url, async (err, response, body) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    var data = JSON.parse(body);
+    console.log(data)
+    // var fixtures = data.data.fixtures;
+
+    // var embed = new Discord.EmbedBuilder()
+    //   .setTitle(data.data.name)
+    //   .setColor("#ff0000")
+    //   .setTimestamp();
+
+    // try {
+    //   var table = new Table({
+    //     titles: ["Date", "Home", "Away", "Score"],
+    //     titleIndexes: [0, 20, 40, 60],
+    //     columnIndexes: [0, 10, 30, 50],
+    //     start: "`",
+    //     end: "`",
+    //     padEnd: 5,
+    //   });
+
+    //   for (var i = 0; i < fixtures.length; i++) {
+    //     table.addRow([
+    //       fixtures[i].formattedDate,
+    //       fixtures[i].homeTeam.abbreviation,
+    //       fixtures[i].awayTeam.abbreviation,
+    //       `${fixtures[i].goalsHomeTeam} - ${fixtures[i].goalsAwayTeam}`,
+    //     ]);
+    //   }
+
+    //   embed.addFields(table.field());
+
+    //   interaction.editReply({ embeds: [embed] });
+    // } catch (err) {
+    //   console.log(err);
+    //   interaction.editReply(
+    //     "Something went wrong. Please try this command again later."
+    //   );
+    // }
+  });
+}
+
 module.exports = {
   data: {
     help: "/football <subcommand>",
@@ -82,6 +148,10 @@ module.exports = {
     switch (interaction.options.getSubcommand()) {
       case "standings":
         standings(interaction);
+        break;
+
+      case "fixtures":
+        fixtures(interaction);
         break;
     }
   },

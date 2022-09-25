@@ -16,6 +16,7 @@
     "firebase": "^9.10.0",
     "firebase-admin": "^11.0.1",
     "google-it": "^1.6.3",
+    "google-search-results-nodejs": "^2.1.0",
     "request": "^2.88.2"
   },
   "devDependencies": {
