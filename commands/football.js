@@ -1,6 +1,8 @@
 const Discord = require("discord.js");
 const request = require("request");
 const { Table } = require("embed-table");
+const SerpApi = require('google-search-results-nodejs');
+const search = new SerpApi.GoogleSearch(process.env.SerpAPI_KEY);
 
 const { SlashCommandBuilder } = Discord;
 
@@ -24,16 +26,16 @@ const commandData = new SlashCommandBuilder()
       .setDescription("Get the fixtures of a team in a league")
       .addStringOption((option) =>
         option
-          .setName("league_id")
-          .setDescription("The ID of the league to get fixtures for")
+          .setName("query")
+          .setDescription("Just the query")
           .setRequired(true)
       )
-      .addStringOption((option) =>
-        option
-          .setName("team_id")
-          .setDescription("The ID of the team to get fixtures for")
-          .setRequired(true)
-      )
+      // .addStringOption((option) =>
+      //   option
+      //     .setName("team_id")
+      //     .setDescription("The ID of the team to get fixtures for")
+      //     .setRequired(true)
+      // )
   );
 
 function standings(interaction) {
@@ -89,16 +91,39 @@ function standings(interaction) {
 }
 
 function fixtures(interaction) {
-  const league_id = interaction.options.getString("league_id");
-  const team_id = interaction.options.getString("team_id");
-  var url = `https://api-football-standings.azharimm.dev/leagues/${league_id}/teams/${team_id}/fixtures?sort=asc`;
-  request(url, async (err, response, body) => {
-    if (err) {
-      console.log(err);
-      return;
+  const usr_qry = interaction.options.getString("query");
+  
+  const params = {
+    q: usr_qry,
+    location: "austin, texas, united states"
+  };
+
+  const callback = function(data) {
+    
+    var gLength = data["sports_results"].games.length
+    for (var i = 0; i < gLength; i++) {
+        var cLength = data["sports_results"].games[i].teams.length
+    for (var j = 0; j < cLength; j++) {
+        console.log(data["sports_results"].games[i].teams[j].name)
     }
-    var data = JSON.parse(body);
-    console.log(data)
+    };
+    //output in an embed here  
+    var embed = new Discord.EmbedBuilder()
+      .setTitle(data.data.name)
+      .setColor("#ff0000")
+      .setTimestamp();
+      
+}
+
+  search.json(params, callback);
+
+  // request(url, async (err, response, body) => {
+  //   if (err) {
+  //     console.log(err);
+  //     return;
+  //   }
+  //   var data = JSON.parse(body);
+  //   console.log(data)
     // var fixtures = data.data.fixtures;
 
     // var embed = new Discord.EmbedBuilder()
@@ -134,7 +159,7 @@ function fixtures(interaction) {
     //     "Something went wrong. Please try this command again later."
     //   );
     // }
-  });
+//   });
 }
 
 module.exports = {
