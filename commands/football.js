@@ -3,6 +3,7 @@ const request = require("request");
 const { Table } = require("embed-table");
 const SerpApi = require('google-search-results-nodejs');
 const search = new SerpApi.GoogleSearch(process.env.SerpAPI_KEY);
+const { EmbedBuilder } = require('discord.js');
 
 const { SlashCommandBuilder } = Discord;
 
@@ -107,12 +108,42 @@ function fixtures(interaction) {
         console.log(data["sports_results"].games[i].teams[j].name)
     }
     };
+
+    console.log(data["sports_results"].games[1].video_highlights)
+    
     //output in an embed here  
-    var embed = new Discord.EmbedBuilder()
-      .setTitle(data.data.name)
-      .setColor("#ff0000")
-      .setTimestamp();
-      
+    const exampleEmbed = new EmbedBuilder()
+    .setColor(0x0099FF)
+    .setTitle(data["sports_results"].title)
+    .setURL('https://discord.js.org/')
+    .setAuthor({ name: 'Some name', iconURL: 'https://i.imgur.com/AfFp7pu.png', url: 'https://discord.js.org' })
+    .setDescription(data["sports_results"].rankings)
+    .setThumbnail(data["sports_results"].thumbnail)
+    .addFields(
+      { name: 'Regular field title', value: 'Some value here' },
+      { name: '\u200B', value: '\u200B' },
+      { name: 'Inline field title', value: 'Some value here', inline: true },
+      { name: 'Inline field title', value: 'Some value here', inline: true },
+    )
+
+    for (let i = 0; i < data["sports_results"].games.length; i++) {
+      var games_matches = data["sports_results"].games[i];
+      if (games_matches.status == "FT") {
+        .addFields({ name: 'Inline field title', value: 'Some value here', inline: true })
+      }
+        
+      } else {
+        
+      }
+    }
+    
+    .addFields({ name: 'Inline field title', value: 'Some value here', inline: true })
+    .setImage('https://i.imgur.com/AfFp7pu.png')
+    .setTimestamp()
+    .setFooter({ text: 'Some footer text here', iconURL: 'https://i.imgur.com/AfFp7pu.png' });
+  
+  interaction.editReply({ embeds: [exampleEmbed] });
+
 }
 
   search.json(params, callback);
