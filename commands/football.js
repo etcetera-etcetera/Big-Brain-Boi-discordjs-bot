@@ -112,7 +112,7 @@ function fixtures(interaction) {
     console.log(data["sports_results"].games[1].video_highlights)
     
     //output in an embed here  
-    const exampleEmbed = new EmbedBuilder()
+    const fixturesEmbed = new EmbedBuilder()
     .setColor(0x0099FF)
     .setTitle(data["sports_results"].title)
     .setURL('https://discord.js.org/')
@@ -128,23 +128,26 @@ function fixtures(interaction) {
 
     for (let i = 0; i < data["sports_results"].games.length; i++) {
       var games_matches = data["sports_results"].games[i];
-      if (games_matches.status == "FT") {
-        .addFields({ name: 'Inline field title', value: 'Some value here', inline: true })
-      }
-        
+      var tournament = games_matches.tournament;
+      var team1 = games_matches.teams[0].name;
+      var team2 = games_matches.teams[1].name;
+      if (games_matches.status != "FT") {
+        fixturesEmbed.addFields({ name: tournament, value: team1 + " vs " + team2, inline: true })
+      } else if (games_matches.status == "FT") {
+        fixturesEmbed.addFields({ name: tournament, value: team1 + " vs " + team2, inline: false })
       } else {
-        
-      }
+        fixturesEmbed.addFields({ name: tournament, value: team1 + " vs " + team2, inline: true })
     }
-    
+    }
+    fixturesEmbed
     .addFields({ name: 'Inline field title', value: 'Some value here', inline: true })
     .setImage('https://i.imgur.com/AfFp7pu.png')
     .setTimestamp()
     .setFooter({ text: 'Some footer text here', iconURL: 'https://i.imgur.com/AfFp7pu.png' });
   
-  interaction.editReply({ embeds: [exampleEmbed] });
+  interaction.editReply({ embeds: [fixturesEmbed] });
 
-}
+
 
   search.json(params, callback);
 
@@ -212,3 +215,4 @@ module.exports = {
     }
   },
 };
+}
