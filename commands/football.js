@@ -1,9 +1,9 @@
 const Discord = require("discord.js");
 const request = require("request");
 const { Table } = require("embed-table");
-const SerpApi = require('google-search-results-nodejs');
+const SerpApi = require("google-search-results-nodejs");
 const search = new SerpApi.GoogleSearch(process.env.SerpAPI_KEY);
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder } = require("discord.js");
 
 const { SlashCommandBuilder } = Discord;
 
@@ -19,24 +19,25 @@ const commandData = new SlashCommandBuilder()
           .setName("league_id")
           .setDescription("The ID of the league to get standings for")
           .setRequired(true)
-      ) 
-  )
-  .addSubcommand((subcommand) =>
-    subcommand
-      .setName("fixtures")
-      .setDescription("Get the fixtures of a team in a league")
-      .addStringOption((option) =>
-        option
-          .setName("query")
-          .setDescription("Just the query")
-          .setRequired(true)
       )
-      // .addStringOption((option) =>
-      //   option
-      //     .setName("team_id")
-      //     .setDescription("The ID of the team to get fixtures for")
-      //     .setRequired(true)
-      // )
+  )
+  .addSubcommand(
+    (subcommand) =>
+      subcommand
+        .setName("fixtures")
+        .setDescription("Get the fixtures of a team in a league")
+        .addStringOption((option) =>
+          option
+            .setName("query")
+            .setDescription("Just the query")
+            .setRequired(true)
+        )
+    // .addStringOption((option) =>
+    //   option
+    //     .setName("team_id")
+    //     .setDescription("The ID of the team to get fixtures for")
+    //     .setRequired(true)
+    // )
   );
 
 function standings(interaction) {
@@ -93,38 +94,41 @@ function standings(interaction) {
 
 function fixtures(interaction) {
   const usr_qry = interaction.options.getString("query");
-  
+
   const params = {
     q: usr_qry,
-    location: "austin, texas, united states"
+    location: "austin, texas, united states",
   };
 
-  const callback = function(data) {
-    
-    var gLength = data["sports_results"].games.length
+  const callback = function (data) {
+    var gLength = data["sports_results"].games.length;
     for (var i = 0; i < gLength; i++) {
-        var cLength = data["sports_results"].games[i].teams.length
-    for (var j = 0; j < cLength; j++) {
-        console.log(data["sports_results"].games[i].teams[j].name)
+      var cLength = data["sports_results"].games[i].teams.length;
+      for (var j = 0; j < cLength; j++) {
+        console.log(data["sports_results"].games[i].teams[j].name);
+      }
     }
-    };
 
-    console.log(data["sports_results"].games[1].video_highlights)
-    
-    //output in an embed here  
+    console.log(data["sports_results"].games[1].video_highlights);
+
+    //output in an embed here
     const fixturesEmbed = new EmbedBuilder()
-    .setColor(0x0099FF)
-    .setTitle(data["sports_results"].title)
-    .setURL('https://discord.js.org/')
-    .setAuthor({ name: 'Some name', iconURL: 'https://i.imgur.com/AfFp7pu.png', url: 'https://discord.js.org' })
-    .setDescription(data["sports_results"].rankings)
-    .setThumbnail(data["sports_results"].thumbnail)
-    .addFields(
-      { name: 'Regular field title', value: 'Some value here' },
-      { name: '\u200B', value: '\u200B' },
-      { name: 'Inline field title', value: 'Some value here', inline: true },
-      { name: 'Inline field title', value: 'Some value here', inline: true },
-    )
+      .setColor(0x0099ff)
+      .setTitle(data["sports_results"].title)
+      .setURL("https://discord.js.org/")
+      .setAuthor({
+        name: "Some name",
+        iconURL: "https://i.imgur.com/AfFp7pu.png",
+        url: "https://discord.js.org",
+      })
+      .setDescription(data["sports_results"].rankings)
+      .setThumbnail(data["sports_results"].thumbnail)
+      .addFields(
+        { name: "Regular field title", value: "Some value here" },
+        { name: "\u200B", value: "\u200B" },
+        { name: "Inline field title", value: "Some value here", inline: true },
+        { name: "Inline field title", value: "Some value here", inline: true }
+      );
 
     for (let i = 0; i < data["sports_results"].games.length; i++) {
       var games_matches = data["sports_results"].games[i];
@@ -132,32 +136,49 @@ function fixtures(interaction) {
       var team1 = games_matches.teams[0].name;
       var team2 = games_matches.teams[1].name;
       if (games_matches.status != "FT") {
-        fixturesEmbed.addFields({ name: tournament, value: team1 + " vs " + team2, inline: true })
+        fixturesEmbed.addFields({
+          name: tournament,
+          value: team1 + " vs " + team2,
+          inline: true,
+        });
       } else if (games_matches.status == "FT") {
-        fixturesEmbed.addFields({ name: tournament, value: team1 + " vs " + team2, inline: false })
+        fixturesEmbed.addFields({
+          name: tournament,
+          value: team1 + " vs " + team2,
+          inline: false,
+        });
       } else {
-        fixturesEmbed.addFields({ name: tournament, value: team1 + " vs " + team2, inline: true })
-    }
+        fixturesEmbed.addFields({
+          name: tournament,
+          value: team1 + " vs " + team2,
+          inline: true,
+        });
+      }
     }
     fixturesEmbed
-    .addFields({ name: 'Inline field title', value: 'Some value here', inline: true })
-    .setImage('https://i.imgur.com/AfFp7pu.png')
-    .setTimestamp()
-    .setFooter({ text: 'Some footer text here', iconURL: 'https://i.imgur.com/AfFp7pu.png' });
-  
-  interaction.editReply({ embeds: [fixturesEmbed] });
+      .addFields({
+        name: "Inline field title",
+        value: "Some value here",
+        inline: true,
+      })
+      .setImage("https://i.imgur.com/AfFp7pu.png")
+      .setTimestamp()
+      .setFooter({
+        text: "Some footer text here",
+        iconURL: "https://i.imgur.com/AfFp7pu.png",
+      });
 
+    interaction.editReply({ embeds: [fixturesEmbed] });
 
+    search.json(params, callback);
 
-  search.json(params, callback);
-
-  // request(url, async (err, response, body) => {
-  //   if (err) {
-  //     console.log(err);
-  //     return;
-  //   }
-  //   var data = JSON.parse(body);
-  //   console.log(data)
+    // request(url, async (err, response, body) => {
+    //   if (err) {
+    //     console.log(err);
+    //     return;
+    //   }
+    //   var data = JSON.parse(body);
+    //   console.log(data)
     // var fixtures = data.data.fixtures;
 
     // var embed = new Discord.EmbedBuilder()
@@ -193,7 +214,8 @@ function fixtures(interaction) {
     //     "Something went wrong. Please try this command again later."
     //   );
     // }
-//   });
+    //   });
+  };
 }
 
 module.exports = {
@@ -215,4 +237,3 @@ module.exports = {
     }
   },
 };
-}
