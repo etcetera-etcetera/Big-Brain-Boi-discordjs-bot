@@ -1,20 +1,11 @@
-const SerpApi = require('google-search-results-nodejs');
-const search = new SerpApi.GoogleSearch("SerpAPI KEY");
+const Fotmob = require('fotmob');
+const fotmob = new Fotmob();
 
-const params = {
-  q: "parissaint germain",
-  location: "austin, texas, united states"
-};
-
-const callback = function(data) {
-    
-    var gLength = data["sports_results"].games.length
-    for (var i = 0; i < gLength; i++) {
-        var cLength = data["sports_results"].games[i].teams.length
-    for (var j = 0; j < cLength; j++) {
-        console.log(data["sports_results"].games[i].teams[j].name)
-    }
-    };
-}
-// Show result as JSON
-search.json(params, callback);
+(async() => { 
+    let matches = await fotmob.getMatchesByDate("20220927");
+    let league = await fotmob.getLeague("42", "overview", "league", "Australia/Melbourne");
+    let team = await fotmob.getTeam("6017", "overview", "team", "Australia/Melbourne")
+    let player = await fotmob.getPlayer("1071179")
+    let details = await fotmob.getMatchDetails("3399269")
+    console.log(matches)
+  })();
