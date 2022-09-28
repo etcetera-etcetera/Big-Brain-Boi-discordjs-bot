@@ -35,8 +35,6 @@ module.exports = {
       });
       posts.shift();
 
-      console.log(posts[0]);
-
       var numOfPosts = posts.length;
       var randInt = Math.floor(Math.random() * numOfPosts);
       var post = posts[randInt].data;
