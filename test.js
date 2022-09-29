@@ -1,28 +1,14 @@
 const request = require("request");
-const dotenv = require("dotenv");
 const fs = require("fs");
+const json = fs.readFileSync("./reddit_jokes copy.json");
+const jokeSON = JSON.parse(json);
 
-// Loading the environment variables
-dotenv.config();
+for (let i = 0; i < jokeSON.length; i++) {
+  const joke = jokeSON[i];
+  let title = joke.title;
+  let body = joke.body;
+  let score = joke.score;
+  let id = joke.id;
 
-
-const json = fs.readFileSync("wocka.json");
-const jokes = JSON.parse(json);
-
-for (let i = 0; i < jokes.length; i++) {
-  const joke = jokes[i];
-  if (!joke.title.length == 0 && !joke.body.length == 0) {
-    if (joke.score > 10) {
-
-
-      (async () => {await db.collection("jokes").add({
-        title: joke.title,
-        body: joke.body,
-      }); })();
-      console.log("Added joke");
-      
-    }
-  }
-  // db.collection("jokes").add({
-
+  console.log(typeof score);
 }
