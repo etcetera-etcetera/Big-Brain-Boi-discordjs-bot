@@ -4,15 +4,22 @@ const request = require("request");
 const fs = require("fs");
 const { EmbedBuilder } = require("discord.js");
 const filesJSON = ["./reddit_jokes.json", "./stupidstuff.json", "./wocka.json"];
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
+const { execute } = require("./afk");
+
 // for loop all the JSON files and read them using file sync
 var masterSON = [];
 let upvotes = " upvotes ";
+let arrLength = [];
+let jokErr = [];
 
 for (i = 0; i < filesJSON.length; i++) {
   var readSON = fs.readFileSync(filesJSON[i], "utf8");
   var jokeSON = JSON.parse(readSON);
+  arrLength.push(jokeSON.length);
   // push to masterSON
-  masterSON = masterSON.concat(jokeSON);
+  // masterSON = masterSON.concat(jokeSON);
+  jokErr.push(jokeSON);
 }
 
 var commandData = new SlashCommandBuilder()
@@ -20,38 +27,86 @@ var commandData = new SlashCommandBuilder()
   .setDescription("Funny?");
 
 async function joke(interaction) {
-  const joke = masterSON[Math.floor(Math.random() * masterSON.length)];
-
-  if (joke.rating) {
-    color = "#ff0000";
-    title = joke.category;
-    body = joke.body;
-    footer = { text: joke.rating + "/5  | " + joke.id };
-  } else if (joke.score > -1) {
-    color = "#ff0000";
-    title = joke.title;
-    body = joke.body;
-    if (joke.score == 1) {
-      upvotes = " upvote ";
-    }
-    console.log(joke.score);
-    footer = { text: joke.score + upvotes + " | " + joke.id };
+  chance = Math.floor(Math.random() * 3);
+  console.log(chance);
+  chance = 0;
+  if (chance == 0) {
+    var masterSON = jokErr[0];
+  } else if (chance == 1) {
+    var masterSON = jokErr[1];
   } else {
-    color = "#ff0000";
-    title = joke.title;
-    body = joke.body;
-    console.log(typeof joke.category);
-    footer = { text: joke.category + " Joke no. " + joke.id };
+    var masterSON = jokErr[2];
   }
 
-  const jokesEmbed = new EmbedBuilder()
+  const jokeEnt = masterSON[Math.floor(Math.random() * masterSON.length)];
+  // const jokeEnt = masterSON[106];
+  console.log(jokeEnt.id);
+  if (jokeEnt.hasOwnProperty("rating")) {
+    color = "#0000ff";
+    title = jokeEnt.category;
+    body = jokeEnt.body;
+    footer = { text: jokeEnt.rating + "/5  | " + jokeEnt.id };
+  } else if (jokeEnt.score > -1) {
+    color = "#ff4500";
+    title = jokeEnt.title;
+    body = jokeEnt.body;
+    if (jokeEnt.score == 1) {
+      upvotes = " upvote ";
+    }
+    console.log(jokeEnt.hasOwnProperty("score"));
+    footer = { text: jokeEnt.score + upvotes + " | " + jokeEnt.id };
+  } else {
+    color = "#00ff00";
+    title = jokeEnt.title;
+    body = jokeEnt.body;
+    console.log(typeof jokeEnt.category);
+    footer = { text: jokeEnt.category + " Joke no. " + jokeEnt.id };
+  }
+
+  const jokesEmbed = new EmbedBuilder();
+
+  if (jokeEnt.body.length < 4096) {
+    console.log("short");
+    jokesEmbed
+      .setColor(color)
+      .setTitle(title)
+      .setDescription(body)
+      .setFooter(footer)
+      .setTimestamp();
+
+    interaction.reply({ embeds: [jokesEmbed] });
+  } else if (jokeEnt.body.length > 4096) {
+    console.log("long");
+    body1 = jokeEnt.body.slice(0, 4096);
+    body2 = jokeEnt.body.slice(4096, jokeEnt.body.length);
+
+    const row = new ActionRowBuilder().addComponents(
+      new ButtonBuilder()
+        .setCustomId("primary")
+        .setLabel("Coninue Reading...")
+        .setStyle(ButtonStyle.Primary)
+    );
+
+    jokesEmbed.setColor(color).setTitle(title).setDescription(body1);
+
+    await interaction.reply({
+      content: "Read More",
+      embeds: [jokesEmbed],
+      components: [row],
+    });
+  } else {
+    interaction.reply({ content: "Something went wrong" });
+  }
+}
+
+async function sendFull(interaction) {
+  const jokesEmbed2 = new EmbedBuilder();
+  jokesEmbed2
     .setColor(color)
-    .setTitle(title)
-    .setDescription(body)
+    .setDescription(body2)
     .setFooter(footer)
     .setTimestamp();
-
-  interaction.reply({ embeds: [jokesEmbed] });
+  await interaction.reply({ embeds: [jokesEmbed2] });
 }
 
 module.exports = {
@@ -61,5 +116,8 @@ module.exports = {
   },
   async execute(interaction) {
     await joke(interaction);
+  },
+  async implement(interaction) {
+    await sendFull(interaction);
   },
 };
