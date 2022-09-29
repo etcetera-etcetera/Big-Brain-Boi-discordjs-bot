@@ -1,9 +1,9 @@
 const Discord = require("discord.js");
 const request = require("request");
 const { Table } = require("embed-table");
-const SerpApi = require('google-search-results-nodejs');
+const SerpApi = require("google-search-results-nodejs");
 const search = new SerpApi.GoogleSearch(process.env.SerpAPI_KEY);
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder } = require("discord.js");
 
 const { SlashCommandBuilder } = Discord;
 
@@ -19,24 +19,25 @@ const commandData = new SlashCommandBuilder()
           .setName("league_id")
           .setDescription("The ID of the league to get standings for")
           .setRequired(true)
-      ) 
-  )
-  .addSubcommand((subcommand) =>
-    subcommand
-      .setName("fixtures")
-      .setDescription("Get the fixtures of a team in a league")
-      .addStringOption((option) =>
-        option
-          .setName("query")
-          .setDescription("Just the query")
-          .setRequired(true)
       )
-      // .addStringOption((option) =>
-      //   option
-      //     .setName("team_id")
-      //     .setDescription("The ID of the team to get fixtures for")
-      //     .setRequired(true)
-      // )
+  )
+  .addSubcommand(
+    (subcommand) =>
+      subcommand
+        .setName("fixtures")
+        .setDescription("Get the fixtures of a team in a league")
+        .addStringOption((option) =>
+          option
+            .setName("query")
+            .setDescription("Just the query")
+            .setRequired(true)
+        )
+    // .addStringOption((option) =>
+    //   option
+    //     .setName("team_id")
+    //     .setDescription("The ID of the team to get fixtures for")
+    //     .setRequired(true)
+    // )
   );
 
 function standings(interaction) {
@@ -93,15 +94,14 @@ function standings(interaction) {
 
 function fixtures(interaction) {
   const usr_qry = interaction.options.getString("query");
-  
+
   const params = {
     q: usr_qry,
-    location: "austin, texas, united states"
+    location: "austin, texas, united states",
   };
 
-  const callback = function(data) {
-    
-    var gLength = data["sports_results"].games.length
+  const callback = function (data) {
+    var gLength = data["sports_results"].games.length;
     for (var i = 0; i < gLength; i++) {
         var cLength = data["sports_results"].games[i].teams.length
     for (var j = 0; j < cLength; j++) {
@@ -157,13 +157,13 @@ function fixtures(interaction) {
 
   search.json(params, callback);
 
-  // request(url, async (err, response, body) => {
-  //   if (err) {
-  //     console.log(err);
-  //     return;
-  //   }
-  //   var data = JSON.parse(body);
-  //   console.log(data)
+    // request(url, async (err, response, body) => {
+    //   if (err) {
+    //     console.log(err);
+    //     return;
+    //   }
+    //   var data = JSON.parse(body);
+    //   console.log(data)
     // var fixtures = data.data.fixtures;
 
     // var embed = new Discord.EmbedBuilder()
@@ -199,7 +199,8 @@ function fixtures(interaction) {
     //     "Something went wrong. Please try this command again later."
     //   );
     // }
-//   });
+    //   });
+  // };
 }
 
 module.exports = {
