@@ -103,74 +103,59 @@ function fixtures(interaction) {
   const callback = function (data) {
     var gLength = data["sports_results"].games.length;
     for (var i = 0; i < gLength; i++) {
-      var cLength = data["sports_results"].games[i].teams.length;
-      for (var j = 0; j < cLength; j++) {
-        console.log(data["sports_results"].games[i].teams[j].name);
-      }
+        var cLength = data["sports_results"].games[i].teams.length
+    for (var j = 0; j < cLength; j++) {
+        console.log(data["sports_results"].games[i].teams[j].name)
     }
+  }
 
-    console.log(data["sports_results"].games[1].video_highlights);
+    console.log(data["sports_results"].games[1].video_highlights)
 
-    //output in an embed here
+    //output in an embed here  
     const fixturesEmbed = new EmbedBuilder()
-      .setColor(0x0099ff)
-      .setTitle(data["sports_results"].title)
-      .setURL("https://discord.js.org/")
-      .setAuthor({
-        name: "Some name",
-        iconURL: "https://i.imgur.com/AfFp7pu.png",
-        url: "https://discord.js.org",
-      })
-      .setDescription(data["sports_results"].rankings)
-      .setThumbnail(data["sports_results"].thumbnail)
-      .addFields(
-        { name: "Regular field title", value: "Some value here" },
-        { name: "\u200B", value: "\u200B" },
-        { name: "Inline field title", value: "Some value here", inline: true },
-        { name: "Inline field title", value: "Some value here", inline: true }
-      );
+    .setColor(0x0099FF)
+    .setTitle(data["sports_results"].title)
+    .setURL('https://discord.js.org/')
+    .setAuthor({ name: 'Some name', iconURL: 'https://i.imgur.com/AfFp7pu.png', url: 'https://discord.js.org' })
+    .setDescription(data["sports_results"].rankings)
+    .setThumbnail(data["sports_results"].thumbnail)
+    // .addFields(
+    //   { name: 'Regular field title', value: 'Some value here' },
+    //   { name: '\u200B', value: '\u200B' },
+    //   { name: 'Inline field title', value: 'Some value here', inline: true },
+    //   { name: 'Inline field title', value: 'Some value here', inline: true },
+    // )
 
     for (let i = 0; i < data["sports_results"].games.length; i++) {
       var games_matches = data["sports_results"].games[i];
       var tournament = games_matches.tournament;
       var team1 = games_matches.teams[0].name;
       var team2 = games_matches.teams[1].name;
+      var score1 = games_matches.teams[0].score;
+      var score2 = games_matches.teams[1].score;
       if (games_matches.status != "FT") {
-        fixturesEmbed.addFields({
-          name: tournament,
-          value: team1 + " vs " + team2,
-          inline: true,
-        });
+        fixturesEmbed.addFields({ name: tournament, value: team1 + " vs " + team2 + "\n" + score1 + " - " + score2 , inline: false })
+        .toJSON();
       } else if (games_matches.status == "FT") {
-        fixturesEmbed.addFields({
-          name: tournament,
-          value: team1 + " vs " + team2,
-          inline: false,
-        });
+        fixturesEmbed.addFields({ name: tournament, value: team1 + " vs " + team2 + "\n" + score1 + " - " + score2 , inline: true })
+        .toJSON();
       } else {
-        fixturesEmbed.addFields({
-          name: tournament,
-          value: team1 + " vs " + team2,
-          inline: true,
-        });
-      }
+        fixturesEmbed.addFields({ name: tournament, value: team1 + " vs " + team2 + "\n" + score1 + " - " + score2 , inline: false })
+        .toJSON();
+    }
     }
     fixturesEmbed
-      .addFields({
-        name: "Inline field title",
-        value: "Some value here",
-        inline: true,
-      })
-      .setImage("https://i.imgur.com/AfFp7pu.png")
-      .setTimestamp()
-      .setFooter({
-        text: "Some footer text here",
-        iconURL: "https://i.imgur.com/AfFp7pu.png",
-      });
+    .setImage('https://i.imgur.com/AfFp7pu.png')
+    .setTimestamp()
+    .setFooter({ text: 'Some footer text here', iconURL: 'https://i.imgur.com/AfFp7pu.png' })
+    .toJSON();
+    
+  
+  interaction.editReply({ embeds: [fixturesEmbed] });
 
-    interaction.editReply({ embeds: [fixturesEmbed] });
+    }
 
-    search.json(params, callback);
+  search.json(params, callback);
 
     // request(url, async (err, response, body) => {
     //   if (err) {
@@ -215,7 +200,7 @@ function fixtures(interaction) {
     //   );
     // }
     //   });
-  };
+  // };
 }
 
 module.exports = {
