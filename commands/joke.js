@@ -1,11 +1,11 @@
 const fs = require("fs");
-const { EmbedBuilder } = require("discord.js");
 const filesJSON = ["./reddit_jokes.json", "./stupidstuff.json", "./wocka.json"];
 const {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
   SlashCommandBuilder,
+  EmbedBuilder,
 } = require("discord.js");
 
 // for loop all the JSON files and read them using file sync
