@@ -1,11 +1,12 @@
-const Discord = require("discord.js");
-const { SlashCommandBuilder } = Discord;
-const request = require("request");
 const fs = require("fs");
 const { EmbedBuilder } = require("discord.js");
 const filesJSON = ["./reddit_jokes.json", "./stupidstuff.json", "./wocka.json"];
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
-const { execute } = require("./afk");
+const {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  SlashCommandBuilder,
+} = require("discord.js");
 
 // for loop all the JSON files and read them using file sync
 var masterSON = [];
