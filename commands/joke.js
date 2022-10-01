@@ -1,8 +1,5 @@
-const filesJSON = [
-  "../reddit_jokes.json",
-  "../stupidstuff.json",
-  "../wocka.json",
-];
+const fs = require("fs");
+const filesJSON = ["./reddit_jokes.json", "./stupidstuff.json", "./wocka.json"];
 const {
   ActionRowBuilder,
   ButtonBuilder,
@@ -12,12 +9,18 @@ const {
 } = require("discord.js");
 
 // for loop all the JSON files and read them using file sync
+var masterSON = [];
 let upvotes = " upvotes ";
-let allJokes = [];
+let arrLength = [];
+let jokErr = [];
 
 for (i = 0; i < filesJSON.length; i++) {
-  var json = require(filesJSON[i]);
-  allJokes.push(json);
+  var readSON = fs.readFileSync(filesJSON[i], "utf8");
+  var jokeSON = JSON.parse(readSON);
+  arrLength.push(jokeSON.length);
+  // push to masterSON
+  // masterSON = masterSON.concat(jokeSON);
+  jokErr.push(jokeSON);
 }
 
 var commandData = new SlashCommandBuilder()
@@ -25,40 +28,42 @@ var commandData = new SlashCommandBuilder()
   .setDescription("Funny?");
 
 async function joke(interaction) {
-  chance = Math.floor(Math.random() * filesJSON.length);
-  var jokes = allJokes[chance];
-
-  var jokeNum = Math.floor(Math.random() * jokes.length);
-  const joke = jokes[jokeNum];
-
-  // stupidstuff.json
-  if (joke.hasOwnProperty("rating")) {
-    color = "#0000ff";
-    title = joke.category;
-    body = joke.body;
-    footer = { text: joke.rating + "/5  | " + joke.id };
+  chance = Math.floor(Math.random() * 3);
+  if (chance == 0) {
+    var masterSON = jokErr[0];
+  } else if (chance == 1) {
+    var masterSON = jokErr[1];
+  } else {
+    var masterSON = jokErr[2];
   }
-  // reddit_jokes.json
-  else if (joke.score > -1) {
+  numeroRandomo = Math.floor(Math.random() * masterSON.length);
+  const jokeEnt = masterSON[numeroRandomo];
+  // Stupid Stuff
+  if (jokeEnt.hasOwnProperty("rating")) {
+    color = "#0000ff";
+    title = jokeEnt.category;
+    body = jokeEnt.body;
+    footer = { text: jokeEnt.rating + "/5  | " + jokeEnt.id };
+  } // Reddit Jokes
+  else if (jokeEnt.score > -1) {
     color = "#ff4500";
-    title = joke.title;
-    body = joke.body;
-    if (joke.score == 1) {
+    title = jokeEnt.title;
+    body = jokeEnt.body;
+    if (jokeEnt.score == 1) {
       upvotes = " upvote ";
     }
-    footer = { text: joke.score + upvotes + " | " + joke.id };
-  }
-  // wocka.json
+    footer = { text: jokeEnt.score + upvotes + " | " + jokeEnt.id };
+  } // Wocka
   else {
     color = "#00ff00";
-    title = joke.title;
-    body = joke.body;
-    footer = { text: joke.category + " Joke no. " + joke.id };
+    title = jokeEnt.title;
+    body = jokeEnt.body;
+    footer = { text: jokeEnt.category + " Joke no. " + jokeEnt.id };
   }
 
   const jokesEmbed = new EmbedBuilder();
 
-  if (joke.body.length < 4096) {
+  if (jokeEnt.body.length < 4096) {
     jokesEmbed
       .setColor(color)
       .setTitle(title)
@@ -67,9 +72,9 @@ async function joke(interaction) {
       .setTimestamp();
 
     interaction.reply({ embeds: [jokesEmbed] });
-  } else if (joke.body.length > 4096) {
-    body1 = joke.body.slice(0, 4096);
-    body2 = joke.body.slice(4096, joke.body.length);
+  } else if (jokeEnt.body.length > 4096) {
+    body1 = jokeEnt.body.slice(0, 4096);
+    body2 = jokeEnt.body.slice(4096, jokeEnt.body.length);
 
     const row = new ActionRowBuilder().addComponents(
       new ButtonBuilder()

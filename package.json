@@ -1,29 +1,3 @@
-{
-  "name": "big-brain-boi",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "Tusshar, Teghjyot",
-  "license": "ISC",
-  "dependencies": {
-    "@discordjs/rest": "^1.1.0",
-    "@iamtraction/google-translate": "^1.1.2",
-    "@ngneat/falso": "^6.1.0",
-    "discord.js": "^14.3.0",
-    "embed-table": "^3.0.0",
-    "falso": "^0.0.0",
-    "firebase": "^9.10.0",
-    "firebase-admin": "^11.0.1",
-    "fotmob": "^1.0.4",
-    "google-it": "^1.6.3",
-    "google-search-results-nodejs": "^2.1.0",
-    "request": "^2.88.2"
-  },
-  "devDependencies": {
-    "dotenv": "^16.0.2",
-    "nodemon": "^2.0.19"
-  }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:52549c0bd6c92ca086d1699f48fa5611f0075ac9d6fccbe9b2d4e4d49dc22d70
+size 703
