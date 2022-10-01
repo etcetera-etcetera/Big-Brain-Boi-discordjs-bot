@@ -27,10 +27,10 @@ var commandData = new SlashCommandBuilder()
 async function joke(interaction) {
   try {
     var chance = Math.floor(Math.random() * filesJSON.length);
-    var jokes = allJokes[2];
+    var jokes = allJokes[chance];
 
     var jokeNum = Math.floor(Math.random() * jokes.length);
-    const joke = jokes[106];
+    const joke = jokes[jokeNum];
 
     var color, body, title, category;
 
