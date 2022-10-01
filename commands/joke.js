@@ -28,8 +28,6 @@ var commandData = new SlashCommandBuilder()
 
 async function joke(interaction) {
   chance = Math.floor(Math.random() * 3);
-  console.log(chance);
-  chance = 0;
   if (chance == 0) {
     var masterSON = jokErr[0];
   } else if (chance == 1) {
@@ -37,36 +35,34 @@ async function joke(interaction) {
   } else {
     var masterSON = jokErr[2];
   }
-
-  const jokeEnt = masterSON[Math.floor(Math.random() * masterSON.length)];
-  // const jokeEnt = masterSON[106];
-  console.log(jokeEnt.id);
+  numeroRandomo = Math.floor(Math.random() * masterSON.length);
+  const jokeEnt = masterSON[numeroRandomo];
+  // Stupid Stuff
   if (jokeEnt.hasOwnProperty("rating")) {
     color = "#0000ff";
     title = jokeEnt.category;
     body = jokeEnt.body;
     footer = { text: jokeEnt.rating + "/5  | " + jokeEnt.id };
-  } else if (jokeEnt.score > -1) {
+  } // Reddit Jokes
+  else if (jokeEnt.score > -1) {
     color = "#ff4500";
     title = jokeEnt.title;
     body = jokeEnt.body;
     if (jokeEnt.score == 1) {
       upvotes = " upvote ";
     }
-    console.log(jokeEnt.hasOwnProperty("score"));
     footer = { text: jokeEnt.score + upvotes + " | " + jokeEnt.id };
-  } else {
+  } // Wocka
+  else {
     color = "#00ff00";
     title = jokeEnt.title;
     body = jokeEnt.body;
-    console.log(typeof jokeEnt.category);
     footer = { text: jokeEnt.category + " Joke no. " + jokeEnt.id };
   }
 
   const jokesEmbed = new EmbedBuilder();
 
   if (jokeEnt.body.length < 4096) {
-    console.log("short");
     jokesEmbed
       .setColor(color)
       .setTitle(title)
@@ -76,7 +72,6 @@ async function joke(interaction) {
 
     interaction.reply({ embeds: [jokesEmbed] });
   } else if (jokeEnt.body.length > 4096) {
-    console.log("long");
     body1 = jokeEnt.body.slice(0, 4096);
     body2 = jokeEnt.body.slice(4096, jokeEnt.body.length);
 
